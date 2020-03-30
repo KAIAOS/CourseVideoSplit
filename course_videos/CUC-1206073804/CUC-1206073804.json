@@ -1,0 +1,28 @@
+{
+  "resource_info": [
+    {
+      "resource_id": "f439195e-6da6-11ea-b5f5-ba127f4bcf71",
+      "resource_name": "[第一章 绪论] 第1讲 基本概念",
+      "resource_type": 1,
+      "resource_structure_id": "",
+      "resource_teacherid": "",
+      "resource_teacher": "",
+      "resource_time": 12.802222483333328,
+      "resource_storage_location": "",
+      "resource_network_location": "https://jdvodrvfb210d.vod.126.net/jdvodrvfb210d/nos/hls/2019/05/28/1214722078_c19b61a78e984d6e9d320df2f1f7683f_sd.m3u8?ak=7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8ed9be8f47e246aae93c7289a7da3f208e4aafe51676e1275f2a60d7875dc6e083059f726dc7bb86b92adbc3d5b34b132d9dc0c520925dbd27459b7f6821c452fa9f9f7a47c7d084cef6fcf98b39bf4de",
+      "update_time": "20-03-24 16:10:43"
+    },
+    {
+      "resource_id": "f669e5be-6da6-11ea-b5f5-ba127f4bcf71",
+      "resource_name": "[第一章 绪论] 第2讲 算法及其分析",
+      "resource_type": 1,
+      "resource_structure_id": "",
+      "resource_teacherid": "",
+      "resource_teacher": "",
+      "resource_time": 24.688666666666666,
+      "resource_storage_location": "",
+      "resource_network_location": "https://jdvodrvfb210d.vod.126.net/jdvodrvfb210d/nos/hls/2019/05/28/1214720148_224ffa8325fa4eeaa880141df2ccd600_sd.m3u8?ak=7909bff134372bffca53cdc2c17adc27a4c38c6336120510aea1ae1790819de8ed9be8f47e246aae93c7289a7da3f2081cbb00b5452cd307d59687c36830e44f3059f726dc7bb86b92adbc3d5b34b132ea479140b1641e05c85b62ea83f3ed1da9f9f7a47c7d084cef6fcf98b39bf4de",
+      "update_time": "20-03-24 16:10:45"
+    }
+  ]
+}
