@@ -2,7 +2,8 @@
 import cv2
 
 
-class VideoSlicerHist:
+class VideoSlicer:
+
     def cut_video(self, video: cv2.VideoCapture) -> list:
         frames = []
         total = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -14,15 +15,9 @@ class VideoSlicerHist:
             frames.append(frame)
 
         res = []
-        cmp_res = []
-        for i in range(len(frames) - 1):
-            frame1 = frames[i]
-            frame2 = frames[i + 1]
-            diff = cv2.compareHist(self.calc_hist(frame1), self.calc_hist(frame2), cv2.HISTCMP_BHATTACHARYYA)
-            if diff > 0.2:
-                res.append((float(i / len(frames)), frame1))
-                # print("{}/{}".format(i, len(frames)))
-                # cv2.imwrite("/home/henrylee/tmp/{}.png".format(frames), frame1)
+        for i in range(len(frames)):
+            res.append((float(i / len(frames)), frames[i]))
+
         return res
 
     def calc_hist(self, frame):

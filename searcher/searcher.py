@@ -18,13 +18,14 @@ class ShotDetail:#一个片段
     kShotTypeUnknown = 0
     kShotTypeExample = 1
 
-    def __init__(self, frame, title='', start_percent=.0, end_percent=.0, texts=None, shot_type=0):
+    def __init__(self, frame, abstract='', paragraph='', start_time='', end_time='', texts=None, shot_type=0):
         if texts is None:
             texts = list()
-        self.frame = frame# end_percent对应frame
-        self.title = title
-        self.start_percent = start_percent
-        self.end_percent = end_percent
+        self.frame = frame
+        self.abstract = abstract
+        self.paragraph = paragraph
+        self.start_time = start_time
+        self.end_time = end_time
         self.texts = texts
         self.type = shot_type
 
@@ -32,26 +33,27 @@ class ShotDetail:#一个片段
         return "".join([t.text for t in self.texts])
 
 
-def get_details(frames, texts) -> List[ShotDetail]:
+def get_details(flags, duration, frames, texts) -> List[ShotDetail]:
     assert len(frames) == len(texts)
     res = []
-    arr_len = len(frames)
 
-    start_percent = .0
     end_percent = .0
-    for i in range(arr_len):
+    for i in flags:
         start_percent = end_percent
-        end_percent, frame = frames[i]
-
-        shot_detail = ShotDetail(frame, start_percent=start_percent, end_percent=end_percent)
-        for text in texts[i]:
+        end_percent, _ = frames[i]
+        _, frame = frames[i-1]
+        s_time = str(int(start_percent * duration / 60)) + ':' + str(int(start_percent * duration % 60))
+        e_time = str(int(end_percent * duration / 60)) + ':' + str(int(end_percent * duration % 60))
+        shot_detail = ShotDetail(frame, start_time=s_time, end_time=e_time)
+        for text in texts[i-1]:
             img_text = ImageText(text['text'], int(text['cx']), int(text['cy']),
                                  int(text['w']), int(text['h']), text['degree'])
             shot_detail.texts.append(img_text)
             if '例' in text['text'] or '思考题' in text['text']:
                 shot_detail.type = ShotDetail.kShotTypeExample
 
-        shot_detail.title = get_title(shot_detail)
+        shot_detail.abstract = get_abstract(shot_detail)
+        shot_detail.paragraph = "".join([t.text for t in shot_detail.texts])
         res.append(shot_detail)
 
     return res
@@ -63,7 +65,7 @@ def is_slogan(img_width: int, img_height: int, text: ImageText):
     return x_percent > 0.75 and y_percent < 0.10
 
 
-def get_title(shot: ShotDetail) -> str:
+def get_abstract(shot: ShotDetail) -> str:
     res = ''
     height, width = shot.frame.shape[:2]
     if len(shot.texts) < 1:

@@ -1,1 +1,1 @@
-from .slicer import VideoSlicerHist, VideoSlicer
+from .slicer import *

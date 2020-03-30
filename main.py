@@ -3,10 +3,14 @@ import sys
 import cv2
 import json
 import datetime
-from slicer import VideoSlicerHist
+import difflib
+from slicer import VideoSlicer
 from searcher import get_details
 from model import text_rec, text_detect
 
+
+def string_similar(s1, s2):
+    return difflib.SequenceMatcher(None, s1, s2).quick_ratio()
 
 def dump(shot_details: list, dst: str):
     with open(dst, 'w') as fp:
@@ -23,23 +27,35 @@ def process(video_path: str): #video_path单个视频路径
     video = cv2.VideoCapture(video_path)
     duration = video.get(cv2.CAP_PROP_FRAME_COUNT) / video.get(cv2.CAP_PROP_FPS)
 
-    # Split Video
-    slicer = VideoSlicerHist()
+    # Split Video to frames
+    slicer = VideoSlicer()
     frames = slicer.cut_video(video)
     texts = []
 
-    # detect text & recognize text
+    # d&r text
     for pos, frame in frames:
         rects = text_detect(frame)
         text = text_rec(frame, rects)
         texts.append(text)
 
+    # pick frames to fragment
+    assert len(frames) == len(texts)
+    flags = []
+    for i in range(len(frames)-1):
+        string1 = ''
+        string2 = ''
+        for item in texts[i]:
+            string1 += item['text']
+        for item in texts[i+1]:
+            string2 += item['text']
+        similar = string_similar(string1, string2)
+        if similar < 0.8 and string1 not in string2:
+            flags.append(i+1)
+        if i+1 == len(frames)-1 and flags[-1]!=len(frames)-1:
+            flags.append(i+1)
+
     # format & classify text
-    res = get_details(frames, texts)
-    for shot in res:
-        if shot.type == shot.kShotTypeExample:
-            print("{} @ {} -> {}: {}".format(shot.title, shot.start_percent * duration, shot.end_percent * duration,
-                                             shot))
+    res = get_details(flags, duration, frames, texts)
     return res
 
 
@@ -60,8 +76,11 @@ def main(argv):
     video_files = get_all_video(path)
 
     t1 = datetime.datetime.now()
+    print('-'*40)
+    print('start at', t1.strftime('%H:%M'))
     i = 0
     for video_file in video_files:
+        print("\t{}/{}: {}".format(i, len(video_files), video_file))
         t2 = datetime.datetime.now()
         res = process(video_file)
         dump(res, video_file[: video_file.rfind('.')] + '.json')
@@ -69,12 +88,11 @@ def main(argv):
         counter = 0
         for shot in res:
             if shot.type == shot.kShotTypeExample:
-                print("exam: {}".format(shot.title))
+                print("\t\texamples found: {}@{}->{}".format(shot.abstract, shot.start_time, shot.end_time))
                 counter += 1
-        print("time: ", datetime.datetime.now() - t2)
-        print("exam count:", counter)
-        print("{}/{}: {}".format(i, len(video_files), video_file))
-
+        print("\t\ttime consume: ", datetime.datetime.now() - t2)
+        print("\t\texamples count:", counter)
+    print('end at', datetime.datetime.now().strftime('%H:%M'))
     print("total time: ", datetime.datetime.now() - t1)
 
 
