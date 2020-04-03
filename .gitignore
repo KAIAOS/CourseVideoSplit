@@ -125,3 +125,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# course_videos
+course_videos/
