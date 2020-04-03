@@ -7,17 +7,21 @@ import difflib
 from slicer import VideoSlicer
 from searcher import get_details
 from model import text_rec, text_detect
+from ffmpy import FFmpeg
+from scipy.io import wavfile
 
 
 def string_similar(s1, s2):
     return difflib.SequenceMatcher(None, s1, s2).quick_ratio()
+
 
 def dump(shot_details: list, dst: str):
     with open(dst, 'w') as fp:
         detail_list = [detail.__dict__ for detail in shot_details]
         for i in range(len(detail_list)):
             del detail_list[i]['frame']
-            detail_list[i]['texts'] = [text.__dict__ for text in detail_list[i]['texts']]
+            del detail_list[i]['texts']
+            #detail_list[i]['texts'] = [text.__dict__ for text in detail_list[i]['texts']]
         json_str = json.dumps(detail_list)
         fp.write(json_str)
 
@@ -27,13 +31,33 @@ def process(video_path: str): #video_path单个视频路径
     video = cv2.VideoCapture(video_path)
     duration = video.get(cv2.CAP_PROP_FRAME_COUNT) / video.get(cv2.CAP_PROP_FPS)
 
-    # Split Video to frames
+    # extract audio from video
+    audio_path = video_path[: video_path.rfind('.')] + '.wav'
+    if not os.path.exists(audio_path):
+        ff = FFmpeg(
+            inputs={video_path: None},
+            outputs={audio_path: '-f wav -ar 16000'}
+        )
+        ff.run()
+
+    # Split Video to frames by audio
+    slicer = VideoSlicer()
+    samplerate, data = wavfile.read(audio_path)
+    audio = data[:, 0]
+    frames = slicer.cut_video_by_audio(video, audio)
+    print(len(frames))
+    """
+    # Split Video to frames by 5s
     slicer = VideoSlicer()
     frames = slicer.cut_video(video)
-    texts = []
-
+    """
     # d&r text
+    texts = []
+    i = 0
     for pos, frame in frames:
+        s_time = str(int(pos * duration / 60)) + ':' + str(int(pos * duration % 60))
+        print(i, ';', s_time)
+        i += 1
         rects = text_detect(frame)
         text = text_rec(frame, rects)
         texts.append(text)
@@ -48,8 +72,11 @@ def process(video_path: str): #video_path单个视频路径
             string1 += item['text']
         for item in texts[i+1]:
             string2 += item['text']
-        similar = string_similar(string1, string2)
-        if similar < 0.8 and string1 not in string2:
+
+        if string_similar(string1, string2) < 0.8:
+            if len(string1) < len(string2):
+                if string_similar(string1,string2[:len(string1)]) > 0.7:
+                    continue
             flags.append(i+1)
         if i+1 == len(frames)-1 and flags[-1]!=len(frames)-1:
             flags.append(i+1)
@@ -76,7 +103,7 @@ def main(argv):
     video_files = get_all_video(path)
 
     t1 = datetime.datetime.now()
-    print('-'*40)
+    print('-'*80)
     print('start at', t1.strftime('%H:%M'))
     i = 0
     for video_file in video_files:
