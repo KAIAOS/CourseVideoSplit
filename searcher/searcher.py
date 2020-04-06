@@ -24,6 +24,7 @@ class ShotDetail:#一个片段
         self.frame = frame
         self.abstract = abstract
         self.paragraph = paragraph
+        self.audio_paragraph = ''
         self.start_time = start_time
         self.end_time = end_time
         self.texts = texts

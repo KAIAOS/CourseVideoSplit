@@ -9,7 +9,8 @@ from searcher import get_details
 from model import text_rec, text_detect
 from ffmpy import FFmpeg
 from scipy.io import wavfile
-
+import speech_recognition as sr
+from pydub import AudioSegment
 
 def string_similar(s1, s2):
     return difflib.SequenceMatcher(None, s1, s2).quick_ratio()
@@ -45,7 +46,6 @@ def process(video_path: str): #video_path单个视频路径
     samplerate, data = wavfile.read(audio_path)
     audio = data[:, 0]
     frames = slicer.cut_video_by_audio(video, audio)
-    print(len(frames))
     """
     # Split Video to frames by 5s
     slicer = VideoSlicer()
@@ -53,11 +53,8 @@ def process(video_path: str): #video_path单个视频路径
     """
     # d&r text
     texts = []
-    i = 0
+
     for pos, frame in frames:
-        s_time = str(int(pos * duration / 60)) + ':' + str(int(pos * duration % 60))
-        print(i, ';', s_time)
-        i += 1
         rects = text_detect(frame)
         text = text_rec(frame, rects)
         texts.append(text)
@@ -86,6 +83,46 @@ def process(video_path: str): #video_path单个视频路径
     return res
 
 
+def process_audio(video_path: str, res: list):
+    r = sr.Recognizer()
+    audio_path = video_path[: video_path.rfind('.')] + '.wav'
+    if not os.path.exists(audio_path):
+        ff = FFmpeg(
+            inputs={video_path: None},
+            outputs={audio_path: '-f wav -ar 16000'}
+        )
+        ff.run()
+    file_path, file_name = os.path.split(audio_path)
+    temp_path = os.path.join(file_path, 'temp')
+    if not os.path.exists(temp_path):
+        os.makedirs(temp_path)
+    sound = AudioSegment.from_wav(audio_path)
+
+    #process each fragment
+    for i, item in enumerate(res):
+        if item.type != item.kShotTypeExample:
+            continue
+        start_time = item.start_time
+        end_time = item.end_time
+        start = int(start_time.split(':')[0])*60 + int(start_time.split(':')[1])
+        end = int(end_time.split(':')[0])*60 + int(end_time.split(':')[1])
+        fragment_name = file_name[: file_name.rfind('.')] + str(i) + '@' + str(start)+ '-' + str(end) + '.wav'
+        fragment_path = os.path.join(temp_path, fragment_name)
+        fragment = sound[start*1000: end*1000]
+        fragment.export(fragment_path, format='wav')
+        with sr.AudioFile(fragment_path) as source:
+            fragment_audio = r.record(source)
+        try:
+            result = r.recognize_google(fragment_audio, language='zh-CN')
+            item.audio_paragraph = str(result)
+        except sr.UnknownValueError:
+            print("Could not understand")
+        except sr.RequestError as e:
+            print("Sphinx error; {0}".format(e))
+
+    return res
+
+
 def get_all_video(path: str) -> list:
     res = list()
     for root, _, files in os.walk(path):
@@ -110,6 +147,7 @@ def main(argv):
         print("\t{}/{}: {}".format(i, len(video_files), video_file))
         t2 = datetime.datetime.now()
         res = process(video_file)
+        res = process_audio(video_file, res)
         dump(res, video_file[: video_file.rfind('.')] + '.json')
         i += 1
         counter = 0

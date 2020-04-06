@@ -7,7 +7,7 @@ def speech_to_text_cmu(audio_path: str):
     with sr.AudioFile(audio_path) as source:
         audio = r.record(source)
     try:
-        return r.recognize_sphinx(audio, language=language_type)
+        return r.recognize_google(audio, language=language_type)
     except sr.UnknownValueError:
         print("Could not understand")
     except sr.RequestError as e:
@@ -16,6 +16,6 @@ def speech_to_text_cmu(audio_path: str):
 
 if __name__ == '__main__':
     t1 = datetime.datetime.now()
-    result = speech_to_text_cmu(audio_path="output1.wav")
+    result = speech_to_text_cmu(audio_path="test.wav")
     print(result)
     print(datetime.datetime.now()-t1)
