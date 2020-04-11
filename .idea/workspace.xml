@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="229cf648-1c17-4c9c-a9ff-657a537b85e4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/mooc_downloader/Xuetangx_Video.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mooc_downloader/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mooc_downloader/aria2c.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mooc_downloader/Xuetangx_Video.py" beforeDir="false" afterPath="$PROJECT_DIR$/mooc_downloader/Xuetangx_Video.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -63,10 +60,16 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mooc_downloader/Xuetangx_Video.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="113">
-              <caret line="134" column="25" selection-start-line="134" selection-start-column="25" selection-end-line="134" selection-end-column="25" />
+            <state relative-caret-position="220">
+              <caret line="10" selection-start-line="10" selection-end-line="11" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
+                <element signature="e#555#1657#0" />
+                <element signature="e#523#1736#0" />
+                <element signature="e#1781#2144#0" />
+                <element signature="e#2188#2775#0" />
+                <element signature="e#2817#3291#0" />
+                <element signature="e#3349#3725#0" />
               </folding>
             </state>
           </provider>
@@ -173,7 +176,8 @@
             <path>
               <item name="CourseVideoSplit" type="b2602c69:ProjectViewProjectNode" />
               <item name="CourseVideoSplit" type="462c0819:PsiDirectoryNode" />
-              <item name="mooc_downloader" type="462c0819:PsiDirectoryNode" />
+              <item name="course_videos" type="462c0819:PsiDirectoryNode" />
+              <item name="CUC-1206073804" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -347,12 +351,12 @@
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19618745" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.32406673" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3285968" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.41207814" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.23445825" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.44227353" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -726,10 +730,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mooc_downloader/Xuetangx_Video.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="134" column="25" selection-start-line="134" selection-start-column="25" selection-end-line="134" selection-end-column="25" />
+        <state relative-caret-position="220">
+          <caret line="10" selection-start-line="10" selection-end-line="11" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#555#1657#0" />
+            <element signature="e#523#1736#0" />
+            <element signature="e#1781#2144#0" />
+            <element signature="e#2188#2775#0" />
+            <element signature="e#2817#3291#0" />
+            <element signature="e#3349#3725#0" />
           </folding>
         </state>
       </provider>

@@ -15,8 +15,8 @@ class XuetangxVideo():
         self.csrftoken = 'izELgVzmEUeKRbbht5NRxJQe95Ff12zW'
 
     def download_video(self):
-        dirname = '../course_videos/CAU08091000589'
-        jsonname = 'CAU08091000589.json'
+        dirname = '../course_videos/' + self.sign
+        jsonname = self.sign + '.json'
         jsonpath = os.path.join(dirname, jsonname)
         if not os.path.exists(dirname):
             os.makedirs(dirname)
@@ -65,8 +65,8 @@ class XuetangxVideo():
                     video['url'] = self._get_video_url(video['id'])
                     video['save_name'] = prefix1 + prefix2 + video['name']
 
-        dirname = '../course_videos/CAU08091000589'
-        filename = 'CAU08091000589.json'
+        dirname = '../course_videos/' + self.sign
+        filename = self.sign + '.json'
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         filepath = os.path.join(dirname, filename)
@@ -115,7 +115,6 @@ class XuetangxVideo():
         d = r.json()
 
         return d['data']['product_id'], d['data']['sku_info'][0]['sku_id']
-
 
     def _join_class(self, product_id, sku_id):
         url = "https://next.xuetangx.com/api/v1/lms/order/entries_free_sku/"+ str(product_id) + "/?sid=" + str(sku_id)
