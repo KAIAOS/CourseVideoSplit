@@ -2,7 +2,7 @@
 import cv2
 
 class VideoSlicer:
-    #sampling by 5s
+    #sampling by hist
     def cut_video(self, video: cv2.VideoCapture) -> list:
         frames = []
         total = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -14,9 +14,17 @@ class VideoSlicer:
             frames.append(frame)
 
         res = []
-        for i in range(len(frames)):
-            res.append((float(i / len(frames)), frames[i]))
-
+        res.append((float(0 / len(frames)), frames[0]))
+        flag = 0
+        for i in range(1, len(frames)):
+            frame = frames[i]
+            flag_framg = frames[flag]
+            diff = cv2.compareHist(self.calc_hist(flag_framg), self.calc_hist(frame), cv2.HISTCMP_BHATTACHARYYA)
+            if diff > 0.09:
+                flag = i
+                res.append((float(i / len(frames)), frame))
+                # name = 'test_imgs/' + str(i) + '.png'
+                # cv2.imwrite(name, frame)
         return res
 
     #sampling by audio
@@ -51,3 +59,6 @@ class VideoSlicer:
                 counter += 1
         return counter
 
+    def calc_hist(self, frame):
+        hist = cv2.calcHist([frame], [0], None, [256], [0, 255])
+        return hist

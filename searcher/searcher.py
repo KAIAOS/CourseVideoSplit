@@ -50,7 +50,7 @@ def get_details(flags, duration, frames, texts) -> List[ShotDetail]:
             img_text = ImageText(text['text'], int(text['cx']), int(text['cy']),
                                  int(text['w']), int(text['h']), text['degree'])
             shot_detail.texts.append(img_text)
-            if '例' in text['text'] or '思考题' in text['text']:
+            if '例' in text['text'] or '思考题' in text['text'] or '设' in text['text'] or '求' in text['text']:
                 shot_detail.type = ShotDetail.kShotTypeExample
 
         shot_detail.abstract = get_abstract(shot_detail)
@@ -60,32 +60,12 @@ def get_details(flags, duration, frames, texts) -> List[ShotDetail]:
     return res
 
 
-def is_slogan(img_width: int, img_height: int, text: ImageText):
-    x_percent = float(text.x) / img_width
-    y_percent = float(text.y) / img_height
-    return x_percent > 0.75 and y_percent < 0.10
-
-
 def get_abstract(shot: ShotDetail) -> str:
     res = ''
-    height, width = shot.frame.shape[:2]
     if len(shot.texts) < 1:
         return ""
-    top_text = shot.texts[-1]
-    for text in shot.texts:
-        if is_slogan(width, height, text):
-            # print("[get_title] drop", text)
-            continue
-        if top_text.y > text.y:
-            top_text = text
-
-    start_y = top_text.y - top_text.height / 2
-    end_y = top_text.y + top_text.height / 2
 
     for text in shot.texts:
-        if is_slogan(width, height, text):
-            continue
-        if start_y < text.y < end_y:
+        if text.y < 125:
             res += text.text
-
     return res

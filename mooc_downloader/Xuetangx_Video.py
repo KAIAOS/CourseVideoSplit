@@ -8,9 +8,9 @@ class XuetangxVideo():
 
     def __init__(self):
         self.resource_info = dict()
-        self.url = 'https://next.xuetangx.com/api/v1/lms/learn/course/chapter?cid=1265406&sign=CAU08091000589'
-        self.cid = '1265406'
-        self.sign = 'CAU08091000589'
+        self.url = 'https://next.xuetangx.com/api/v1/lms/learn/course/chapter?cid=1515474&sign=HEBUT07011000689'
+        self.cid = '1515474'
+        self.sign = 'HEBUT07011000689'
         self.cookie = 'login_type=P; csrftoken=izELgVzmEUeKRbbht5NRxJQe95Ff12zW; sessionid=fpchaz5cr4q2xc03c2l2zp1f357l4t1c; k=28624931'
         self.csrftoken = 'izELgVzmEUeKRbbht5NRxJQe95Ff12zW'
 
@@ -35,10 +35,11 @@ class XuetangxVideo():
                         continue
                     videoname = video['save_name'] + '.mp4'
                     videopath = os.path.join(dirname, videoname)
-                    url = video['url']
+                    url = '"'+ video['url'] + '"'
+                    videopath = '"'+ videopath + '"'
                     cmd = aira2_cmd.format(url=url, filename=videopath)
-                    subprocess.run(cmd, shell=False, stdout=subprocess.PIPE)
-                    print('download:', videoname)
+                    # subprocess.run(cmd, shell=False, stdout=subprocess.PIPE)
+                    print('download:', videoname, cmd)
 
     def crawl_video(self):
         self._get_course_chapter()
@@ -131,5 +132,5 @@ class XuetangxVideo():
 
 if __name__ == '__main__':
     xuetang = XuetangxVideo()
-    xuetang.crawl_video()
+    #xuetang.crawl_video()
     xuetang.download_video()

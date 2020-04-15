@@ -43,9 +43,9 @@ def process(video_path: str): #video_path单个视频路径
 
     # Split Video to frames by audio
     slicer = VideoSlicer()
-    samplerate, data = wavfile.read(audio_path)
-    audio = data[:, 0]
-    frames = slicer.cut_video_by_audio(video, audio)
+    # samplerate, data = wavfile.read(audio_path)
+    # audio = data[:, 0]
+    frames = slicer.cut_video(video)
     """
     # Split Video to frames by 5s
     slicer = VideoSlicer()
@@ -57,7 +57,12 @@ def process(video_path: str): #video_path单个视频路径
     for pos, frame in frames:
         rects = text_detect(frame)
         text = text_rec(frame, rects)
-        texts.append(text)
+        text_fliter = []
+        for r in text:
+            if r['cx'] > 565 and r['cy'] < 38:
+                continue
+            text_fliter.append(r)
+        texts.append(text_fliter)
 
     # pick frames to fragment
     assert len(frames) == len(texts)
@@ -136,7 +141,7 @@ def get_all_video(path: str) -> list:
 
 def main(argv):
     # path = '/home/henrylee/remote/cpu-node3/course_videos/WHU-1001539003/[第1周：绪论（时长：56分11秒）] 第1周第5讲-算法分析基础（11：19）.mp4'
-    path = 'course_videos/CUC-1206073804'
+    path = 'course_videos/test_video'
     video_files = get_all_video(path)
 
     t1 = datetime.datetime.now()
